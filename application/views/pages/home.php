@@ -2,9 +2,9 @@
 	<h2>Warzone Stats Overlay!</h2>
 	<p>Use this stats overlay to display your game stats</p>
 
-<?php echo validation_errors(); ?>
+	<?php echo validation_errors(); ?>
 
-<?php echo form_open("overlay"); ?>
+	<?php echo form_open("generate"); ?>
 	<div class="input">
 		<p>Input your username here</p>
 		<p><input class="form-control mr-sm-2" type="text" placeholder="Username" name="username"></p>
@@ -23,6 +23,22 @@
 			</fieldset>
 		</p>
 	</div>
-		<button id="submit-buttons" class="btn btn-success" type="submit" ​​​​​>Generate Link</button>
+	<button id="submit-buttons" class="btn btn-success" type="submit" ​​​​​>Generate Link</button>
 	</form>
 </div>
+
+<div><?php 
+	$valid = isset($confirmed);
+	if($valid && $confirmed)
+	{
+		?>
+	<form>
+		<label for="link">Session Stats:</label>
+		<input type="text" id="fname" name="fname" value=<?php echo base_url().'overlay/'.$username.'/'.$platform?>>
+	</form> <?php
+	} 
+	else if($valid)
+	{
+		//Show error
+	}
+?></div>

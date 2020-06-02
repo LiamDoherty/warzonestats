@@ -25,9 +25,58 @@ class Home extends CI_Controller
         $this->curl = curl_init();
     }
 
+    public function GenerateLink()
+    {
+        $username = $this->input->post('username');
+        $platform = $this->input->post('platform');
+        $this->SetToken($this->baseCookie);
+        $this->Login("info@hexeum.net", "Hexeum0verlay", false);
+        $isUser = $this->ConfirmUser($username, $platform);
+        if(!$isUser)
+        {
+            $data = array('confirmed' => false);
+            $this->load->view('templates/header');
+            $this->load->view('pages/home', $data);
+            $this->load->view('templates/footer');                                    
+        }
+        else{
+            $data = array('confirmed' => true, 'username' => $username, 'platform' => $platform);
+            $this->load->view('templates/header');
+            $this->load->view('pages/home', $data);
+            $this->load->view('templates/footer');                 
+        }
+    }
+
+    public function ConfirmUser($username, $platform)
+    {
+        $encodedUserName = urlencode($username);
+        curl_setopt_array($this->curl, array(
+        CURLOPT_URL => $this->defaultBaseURL."stats/cod/v1/title/mw/platform/".$platform."/gamer/".$username."/profile/type/mp",
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_HTTPHEADER => array("Cookie: ".$this->baseCookie,
+        "Accept: application/json, text/javascript, */*; q=0.01"),
+        CURLOPT_CUSTOMREQUEST => "GET",
+        ));
+
+        $response = curl_exec($this->curl);
+        $array = json_decode($response, true);
+
+        if($array['status'] == 'error')
+        {
+            return false;
+        }
+        else return true;
+    }
+
     public function UpdateOverlay()
     {
-        $newData  =$this->GetStatsArray();
+        $username = $this->input->post('username');
+        $platform = $this->input->post('platform');
+        $newData  = $this->GetStatsArray($username, $platform);
         $mergedData = array(
             'wins' => $newData['wins'],
             'kills' => $newData['kills'],
@@ -36,12 +85,13 @@ class Home extends CI_Controller
         echo json_encode($mergedData);
     }
 
-    public function getOverlayStats()
+    public function getOverlayStats($username, $platform)
     {
-        $newData  =$this->GetStatsArray();
+        print_r("dafak ".$username." ".$platform);
+        $newData  =$this->GetStatsArray($username, $platform);
         $mergedData = array(
-            'username' => $newData['username'],
-            'platform' => $newData['platform'],
+            'username' => $username,
+            'platform' => $platform,
             'wins' => $newData['wins'],
             'kills' => $newData['kills'],
             'totalKills' => $newData['totalKills'],
@@ -49,16 +99,8 @@ class Home extends CI_Controller
             'mostRecentMatchId' => $newData['mostRecentMatchId']
         );
 
-        if($this->form_validation->run() === FALSE)
-        {
-            echo("error");//Redirect back to the overlay page
-        }
-        else
-        {
-            $this->load->view('templates/header');
-            $this->load->view('pages/overlay', $mergedData);
-            $this->load->view('templates/footer');
-        }
+        $this->load->view('templates/overlay-template');
+        $this->load->view('pages/overlay', $mergedData);
     }
 
     private function GetUserStats($userName, $platform)
@@ -79,7 +121,6 @@ class Home extends CI_Controller
         $this->SetToken($this->baseCookie);
         $this->Login("info@hexeum.net", "Hexeum0verlay", false);
         $matchData = $this->GetKillsSinceMostRecentMatch($matchId, $userName, $platform);
-        //print_r(json_encode($this->GetAllMatchHistory($userName, $platform)));
 
         if($matchData != null)
         {
@@ -109,7 +150,6 @@ class Home extends CI_Controller
         $response = curl_exec($this->curl);
         $matchDetails = json_decode($response, true);
         $matches = $matchDetails['data']['matches'];
-        //print_r(json_encode($matches[5]));
         //Loop the matches array until we find our Id
         
         $newMostRecentMatchId = 0;
@@ -152,14 +192,14 @@ class Home extends CI_Controller
         return $refreshData;
     }
 
-    private function GetStatsArray()
+    private function GetStatsArray($username, $platform)
     {
         $this->form_validation->set_rules('username', 'Username', 'required');
         $this->form_validation->set_rules('platform', 'Platform', 'required');        
 
         $receivedData = array(
-            'username' => $this->input->post('username'),
-            'platform' => $this->input->post('platform'),
+            'username' => $username,
+            'platform' => $platform,
             'mostRecentMatchId' => $this->input->post('mostRecentMatchId'),
             'kills' => $this->input->post('kills'),
             'wins' => $this->input->post('wins')

@@ -22,23 +22,29 @@
 				</select>
 			</fieldset>
 		</p>
+		<button id="submit-buttons" class="btn btn-success" type="submit" ​​​​​>Generate Link</button>
+		<br />
+		<div><?php 
+				$valid = isset($confirmed);
+				if($valid && $confirmed)
+				{
+					?>
+				<div class="sessionStats">
+					<label for="link">Session Stats:</label>
+					<input type="text" class="form-control" id="fname" name="fname"
+					value=<?php echo base_url().'overlay/'.$username.'/'.$platform?>>
+				</div>
+				<?php
+				}
+				else if($valid && !$confirmed)
+				{
+					?>
+					<div class="alert alert-danger sessionStats">
+						User not found, please enter a valid username and platform..
+					</div>
+					<?php
+				} ?>
+		</div>
 	</div>
-	<button id="submit-buttons" class="btn btn-success" type="submit" ​​​​​>Generate Link</button>
 	</form>
 </div>
-
-<div><?php 
-	$valid = isset($confirmed);
-	if($valid && $confirmed)
-	{
-		?>
-	<form>
-		<label for="link">Session Stats:</label>
-		<input type="text" id="fname" name="fname" value=<?php echo base_url().'overlay/'.$username.'/'.$platform?>>
-	</form> <?php
-	} 
-	else if($valid)
-	{
-		//Show error
-	}
-?></div>

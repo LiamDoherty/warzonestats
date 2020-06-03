@@ -64,8 +64,7 @@ class Home extends CI_Controller
 
         $response = curl_exec($this->curl);
         $array = json_decode($response, true);
-
-        if($array['status'] == 'error')
+        if($array['status'] != 'success')
         {
             return false;
         }
@@ -87,7 +86,6 @@ class Home extends CI_Controller
 
     public function getOverlayStats($username, $platform)
     {
-        print_r("dafak ".$username." ".$platform);
         $newData  =$this->GetStatsArray($username, $platform);
         $mergedData = array(
             'username' => $username,

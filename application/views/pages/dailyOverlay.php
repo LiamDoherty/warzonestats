@@ -1,9 +1,9 @@
-<script src="<?php echo base_url(); ?>js/overlay-refresh.js"></script>
+<script src="<?php echo base_url(); ?>js/dailyOverlay-refresh.js"></script>
 
 <div class="container">
 	<div class="statsContainer">
 		<video loop autoplay muted class="video">
-			<source src=<?php echo base_url('Src/Overlay.webm'); ?> type="video/webm">
+			<source src=<?php echo base_url('Src/OverlayDaily.webm'); ?> type="video/webm">
 		</video>
 		<div class="statsWrapper">
 			<div class="stats">
@@ -18,20 +18,6 @@
 					<div class="statWrapper">
 						<div class="innerStat">
 							<div id="winStat" class="stat"><?php echo $wins; ?></div>
-						</div>
-					</div>
-				</div>
-				<div id="totalKills" class="statMax">
-					<div class="statWrapper">
-						<div class="innerStat">
-							<div class="stat"><?php echo $totalKills; ?></div>
-						</div>
-					</div>
-				</div>
-				<div id="totalWins" class="statMax">
-					<div class="statWrapper">
-						<div class="innerStat">
-							<div class="stat"><?php echo $totalWins; ?></div>
 						</div>
 					</div>
 				</div>

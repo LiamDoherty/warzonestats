@@ -10,7 +10,7 @@ function UpdateOverlayAJAX() {
 	var wins = $('#winStat').text();
 
 	$.ajax({
-		url: '/update_overlay',
+		url: '/update_dailyOverlay',
 		type: 'POST',
 		data: {
 			kills: kills,

@@ -29,6 +29,7 @@ class Home extends CI_Controller
     {
         $username = $this->input->post('username');
         $platform = $this->input->post('platform');
+        $overlayType = $this->input->post('overlayType');
         $this->SetToken($this->baseCookie);
         $this->Login("info@hexeum.net", "Hexeum0verlay", false);
         $isUser = $this->ConfirmUser($username, $platform);
@@ -37,14 +38,37 @@ class Home extends CI_Controller
             $data = array('confirmed' => false);
             $this->load->view('templates/header');
             $this->load->view('pages/home', $data);
-            $this->load->view('templates/footer');                                    
+            $this->load->view('templates/footer');
         }
         else{
-            $data = array('confirmed' => true, 'username' => $username, 'platform' => $platform);
+            $data = array('confirmed' => true, 'username' => $username, 'platform' => $platform,
+            "overlayType" => $overlayType);
             $this->load->view('templates/header');
             $this->load->view('pages/home', $data);
-            $this->load->view('templates/footer');                 
+            $this->load->view('templates/footer');
         }
+    }
+
+    public function getDailyStats($username, $platform)
+    {
+        $newData  =$this->GetStatsArray($username, $platform);
+        $mergedData = array(
+            'username' => $username,
+            'platform' => $platform,
+            'wins' => $newData['wins'],
+            'kills' => $newData['kills'],
+            'mostRecentMatchId' => $newData['mostRecentMatchId']
+        );
+        // $mergedData = array(
+        //     'username' => $username,
+        //     'platform' => $platform,
+        //     'wins' => 100000,
+        //     'kills' => 100,
+        //     'mostRecentMatchId' => 80
+        // );
+
+        $this->load->view('templates/overlay-template');
+        $this->load->view('pages/dailyOverlay', $mergedData);
     }
 
     public function ConfirmUser($username, $platform)
@@ -72,6 +96,21 @@ class Home extends CI_Controller
     }
 
     public function UpdateOverlay()
+    {
+        $username = $this->input->post('username');
+        $platform = $this->input->post('platform');
+        $newData  = $this->GetStatsArray($username, $platform);
+        $mergedData = array(
+            'wins' => $newData['wins'],
+            'kills' => $newData['kills'],
+            'totalKills' => $newData['totalKills'],
+            'totalWins' => $newData['totalWins'],
+            'mostRecentMatchId' => $newData['mostRecentMatchId']
+        );
+        echo json_encode($mergedData);
+    }
+
+    public function UpdateDailyOverlay()
     {
         $username = $this->input->post('username');
         $platform = $this->input->post('platform');
@@ -205,7 +244,6 @@ class Home extends CI_Controller
 
         $updatedData = $this->RefreshOverlay($receivedData['username'], $receivedData['platform'], $receivedData['mostRecentMatchId']);
         $careerData = $this->GetCareerStats($receivedData['username'], $receivedData['platform']);
-
 
         $aggregatedKills = $updatedData['kills'] + $receivedData['kills'];
         $aggregatedWins = $updatedData['wins'] + $receivedData['wins'];

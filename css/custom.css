@@ -5,7 +5,6 @@
 
 .input
 {
-    width: 30%;
 }
 
 body{
@@ -25,4 +24,37 @@ h1, h2, h3, h4, h5, h6 {
 .sessionStats
 {
     margin-top: 50;
+}
+
+.mainContainer
+{
+    display: flex;
+}
+
+.form
+{
+    width: 30%;
+    display: inline-block;
+}
+
+.previewWrapper
+{
+    display: flex;
+    align-items: center;
+}
+
+.preview
+{
+    text-align: center;
+}
+
+.dailyPreview
+{
+    width: 80%;
+}
+
+.summaryPreview
+{
+    width: 80%;
+    display: none;
 }

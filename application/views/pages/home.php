@@ -1,8 +1,8 @@
 <script src="<?php echo base_url(); ?>js/home.js"></script>
 
-<div class="landing-wrapper">
+<div class="landing-wrapper bg-primary">
 	<h2>Warzone Stats Overlay!</h2>
-	<p>Use this stats overlay to display your game stats</p>
+	<p>Use this stats overlay to display your warzone stats while streaming</p>
 
 	<?php echo validation_errors(); ?>
 	<div class="mainContainer">
@@ -10,18 +10,24 @@
 			<?php echo form_open("generate"); ?>
 			<div class="input">
 				<p>Input your username here</p>
-				<p><input class="form-control mr-sm-2" type="text" placeholder="Username" name="username"></p>
+				<p><input class="form-control mr-sm-2" type="text" placeholder="Username" name="username"
+						value=<?php echo $username ?>></p>
 
 				<p> Select your platform</p>
 				<p>
 					<fieldset>
 						<select class="custom-select" name="platform">
-							<option selected="">Select Your Platform</option>
-							<option value="psn">Playstation</option>
-							<option value="xbl">Xbox</option>
-							<option value="steam">Steam</option>
-							<option value="uno">Activision</option>
-							<option value="battle">Battlenet</option>
+							<option>Select Your Platform</option>
+							<option <?php if($platform=="psn"): ?>selected="selected" <?php endif;?> value="psn">
+								Playstation</option>
+							<option <?php if($platform=="xbl"): ?>selected="selected" <?php endif;?> value="xbl">Xbox
+							</option>
+							<option <?php if($platform=="steam"): ?>selected="selected" <?php endif;?> value="steam">
+								Steam</option>
+							<option <?php if($platform=="uno"): ?>selected="selected" <?php endif;?> value="uno">
+								Activision</option>
+							<option <?php if($platform=="battle"): ?>selected="selected" <?php endif;?> value="battle">
+								Battlenet</option>
 						</select>
 					</fieldset>
 				</p>
@@ -29,15 +35,37 @@
 				<p>
 					<fieldset>
 						<select class="custom-select overlay-type" name="overlayType">
-							<option selected="" value="daily">Daily Stats</option>
-							<option value="summary">Total & Daily Stats</option>
+							<option <?php if($overlayType=="daily"): ?>selected="selected" <?php endif;?> value="daily">
+								Daily Stats</option>
+							<option <?php if($overlayType=="summary"): ?> selected="selected" <?php endif; ?>
+								value="summary">Total & Daily Stats</option>
 						</select>
 					</fieldset>
 				</p>
 				<button id="submit-buttons" class="btn btn-success" type="submit" ​​​​​>Generate Link</button>
 				<br />
-				<div><?php 
-				$valid = isset($confirmed);
+
+			</div>
+			<div>
+				</form>
+			</div>
+		</div>
+		<div class="previewWrapper">
+			<div class="preview-bg">
+				<div class="preview">
+					<div>
+						<img class="dailyPreview" src=<?php echo base_url('Src/DailyPreview.png'); ?>
+							alt="warzone-daily-stats-overlay">
+					</div>
+					<div>
+						<img class="summaryPreview" src=<?php echo base_url('Src/OverlayPreview.png'); ?>
+							alt="warzone-summary-stats-overlay">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div><?php 
 				$url = 'overlay/';
 				if(isset($overlayType))
 				{
@@ -45,43 +73,26 @@
 						$url = 'overlay/';
 					}
 					else if($overlayType == "daily"){
-						$url = 'dailyOverlay/';
+						$url = 'dailyoverlay/';
 					}
 				}
-				if($valid && $confirmed)
+				if(isset($confirmed) && $confirmed)
 				{
 					?>
-					<div class="sessionStats">
-						<label for="link">Session Stats:</label>
-						<input type="text" class="form-control" id="fname" name="fname"
-							value=<?php echo base_url().$url.$username.'/'.$platform?>>
-					</div>
-					<?php
+		<div class="sessionStats">
+			<label for="link">Session Stats:</label>
+			<input type="text" class="form-control" id="fname" name="fname"
+				value=<?php echo base_url().$url.$username.'/'.$platform?>>
+		</div>
+		<?php
 				}
-				else if($valid && !$confirmed)
+				else if(isset($confirmed) && !$confirmed)
 				{
 					?>
-					<div class="alert alert-danger sessionStats">
-						User not found, please enter a valid username and platform..
-					</div>
-					<?php
+		<div class="alert alert-danger sessionStats">
+			User not found, please enter a valid username and platform..
+		</div>
+		<?php
 				} ?>
-				</div>
-			</div>
-			<div>
-				</form>
-			</div>
-		</div>
-		<div class="previewWrapper">
-			<div class="preview">
-				<div>
-					<img class="dailyPreview" src=<?php echo base_url('Src/DailyPreview.png'); ?>
-						alt="warzone-daily-stats-overlay">
-				</div>
-				<div>
-					<img class="summaryPreview" src=<?php echo base_url('Src/OverlayPreview.png'); ?>
-						alt="warzone-summary-stats-overlay">
-				</div>
-			</div>
-		</div>
 	</div>
+</div>

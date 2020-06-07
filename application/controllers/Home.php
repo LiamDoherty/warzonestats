@@ -35,17 +35,14 @@ class Home extends CI_Controller
         $isUser = $this->ConfirmUser($username, $platform);
         if(!$isUser)
         {
-            $data = array('confirmed' => false);
-            $this->load->view('templates/header');
-            $this->load->view('pages/home', $data);
-            $this->load->view('templates/footer');
+            $data = array('confirmed' => false, 'username' => $username, 'platform' => $platform,
+            "overlayType" => $overlayType);
+            $this->view("home", $data);
         }
         else{
             $data = array('confirmed' => true, 'username' => $username, 'platform' => $platform,
             "overlayType" => $overlayType);
-            $this->load->view('templates/header');
-            $this->load->view('pages/home', $data);
-            $this->load->view('templates/footer');
+            $this->view('home', $data);
         }
     }
 
@@ -420,18 +417,38 @@ class Home extends CI_Controller
         return $allMatches['data']['summary']['all']['kills'];
     }
 
-    public function view($page = 'home')
+    public function view($page = 'home', $data = null)
     {
         if(!file_exists(APPPATH.'views/pages/' .$page.'.php'))
         {
             show_404();
         }
 
-        $data['title'] = ucfirst($page);
+        $title = $this->GetCorrectTitle($page);
+
+        if($data == null)
+        {
+            $data = array('username' => '', 'platform' => '',
+            "overlayType" => '', 'title' => $title, 'page' => $page);
+        }
+        else
+        {
+            $data += array('title' => $title);
+            $data += array('page' => $page);
+        }
 
         $this->load->view('templates/header', $data);
         $this->load->view('pages/' .$page, $data);
         $this->load->view('templates/footer', $data);
+    }
+
+    private function GetCorrectTitle($pageName)
+    {
+        if($pageName == 'about')
+        {
+            return "About Us";         
+        }
+        else return 'Warzone Stats Overlay';
     }
 
     private function ParseTokenFromResponse($response)

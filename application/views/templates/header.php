@@ -8,6 +8,8 @@
 	<script src="<?php echo base_url(); ?>js/jquery.js"></script>
 	<script src="<?php echo base_url(); ?>js/bootstrap.js"></script>
 	<link rel="icon" href="<?=base_url()?>/Src/fav.png" type="image/png">
+	<link rel="canonical" href="https://warzonestats.net/">
+	<meta name="description" content="<?php echo $meta_description; ?>">
 </head>
 
 <body>

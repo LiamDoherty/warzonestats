@@ -32,7 +32,9 @@ class Home extends CI_Controller
         $overlayType = $this->input->post('overlayType');
         $this->SetToken($this->baseCookie);
         $this->Login("info@hexeum.net", "Hexeum0verlay", false);
+        $username =  urlencode($username);
         $isUser = $this->ConfirmUser($username, $platform);
+
         if(!$isUser)
         {
             $data = array('confirmed' => false, 'username' => $username, 'platform' => $platform,
@@ -56,13 +58,6 @@ class Home extends CI_Controller
             'kills' => $newData['kills'],
             'mostRecentMatchId' => $newData['mostRecentMatchId']
         );
-        // $mergedData = array(
-        //     'username' => $username,
-        //     'platform' => $platform,
-        //     'wins' => 100000,
-        //     'kills' => 100,
-        //     'mostRecentMatchId' => 80
-        // );
 
         $this->load->view('templates/overlay-template');
         $this->load->view('pages/dailyOverlay', $mergedData);
@@ -70,7 +65,6 @@ class Home extends CI_Controller
 
     public function ConfirmUser($username, $platform)
     {
-        $encodedUserName = urlencode($username);
         curl_setopt_array($this->curl, array(
         CURLOPT_URL => $this->defaultBaseURL."stats/cod/v1/title/mw/platform/".$platform."/gamer/".$username."/profile/type/mp",
         CURLOPT_RETURNTRANSFER => true,
@@ -84,12 +78,20 @@ class Home extends CI_Controller
         ));
 
         $response = curl_exec($this->curl);
+        log_message('debug', $response);
         $array = json_decode($response, true);
         if($array['status'] != 'success')
         {
+            if($array['status' == "error"])
+            {
+                log_message('info', "Failed to confirm user, this could be due to incorrect details or api call failed");   
+            }
             return false;
         }
-        else return true;
+        else{
+            log_message('info', "User was successfully logged in and made a call to the api");   
+             return true;
+        }
     }
 
     public function UpdateOverlay()
@@ -160,14 +162,12 @@ class Home extends CI_Controller
         {
             return $matchData;
         }       
-        else print_r("No new faking data, play more games");
     }
 
     private function GetKillsSinceMostRecentMatch($mostRecentMatchId, $userName, $platform)
     {
-        $encodedUserName = urlencode($userName);
         curl_setopt_array($this->curl, array(
-        CURLOPT_URL => $this->defaultBaseURL."crm/cod/v2/title/mw/platform/".$platform."/gamer/".$encodedUserName."/matches/wz/start/0/end/0/details",
+        CURLOPT_URL => $this->defaultBaseURL."crm/cod/v2/title/mw/platform/".$platform."/gamer/".$userName."/matches/wz/start/0/end/0/details",
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_MAXREDIRS => 10,
         CURLOPT_TIMEOUT => 0,
@@ -259,11 +259,13 @@ class Home extends CI_Controller
         curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
         $response = curl_exec($this->curl);
         $this->token = $this->ParseTokenFromResponse($response);
-        $this->baseCookie = "new_SiteId=cod; ACT_SSO_LOCALE=en_US;country=US;XSRF-TOKEN=".$this->token.";";
+        log_message("debug", "Login attempt token response ".$this->token);
+        $this->baseCookie = "new_SiteId=cod; ACT_SSO_LOCALE=en_US;XSRF-TOKEN=".$this->token.";";
     }
 
     private function Login($email, $password, $debugResponse)
     {
+        log_message('debug', 'Logging in with cookie '.$this->baseCookie);
         curl_setopt_array($this->curl, array(
           CURLOPT_URL => "https://profile.callofduty.com/do_login?new_SiteId=cod",
           CURLOPT_RETURNTRANSFER => true,
@@ -280,8 +282,9 @@ class Home extends CI_Controller
           ),
         ));
 
-        curl_setopt($this->curl, CURLOPT_COOKIEJAR, '/tmp/cookies.txt');
-        curl_setopt($this->curl, CURLOPT_COOKIEFILE, '/tmp/cookies.txt');
+        $cookies = tempnam('/tmp','cookies.txt');
+        curl_setopt($this->curl, CURLOPT_COOKIEJAR, $cookies);
+        curl_setopt($this->curl, CURLOPT_COOKIEFILE, $cookies);
         
         curl_setopt($this->curl, CURLOPT_VERBOSE, true);
         $verbose = fopen('php://temp', 'w+');
@@ -299,7 +302,6 @@ class Home extends CI_Controller
 
     private function GetCareerStats($userName, $platform)//Need cookies to already be set
     {
-        $encodedUserName = urlencode($userName);
         curl_setopt_array($this->curl, array(
         CURLOPT_URL => $this->defaultBaseURL."stats/cod/v1/title/mw/platform/".$platform."/gamer/".$userName."/profile/type/mp",
         CURLOPT_RETURNTRANSFER => true,
@@ -322,9 +324,8 @@ class Home extends CI_Controller
     
     private function GetAllMatchHistory($userName, $platform)
     {
-        $encodedUserName = urlencode($userName);
         curl_setopt_array($this->curl, array(
-        CURLOPT_URL => $this->defaultBaseURL."crm/cod/v2/title/mw/platform/".$platform."/gamer/".$encodedUserName."/matches/wz/start/0/end/0/",
+        CURLOPT_URL => $this->defaultBaseURL."crm/cod/v2/title/mw/platform/".$platform."/gamer/".$userName."/matches/wz/start/0/end/0/",
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_MAXREDIRS => 10,
         CURLOPT_TIMEOUT => 0,
@@ -425,6 +426,9 @@ class Home extends CI_Controller
         }
 
         $title = $this->GetCorrectTitle($page);
+        $data['meta_description'] = "COD warzone stats streaming overlay. Free to use overlay for displaying warzone stats on stream. For all major platforms including Twitch, Mixer, Streamlabs";
+
+        $title = "Call of Duty Stream Overlay : Warzone Stats Overlay";
 
         if($data == null)
         {

@@ -4,14 +4,13 @@
 	<h2>Warzone Stats Overlay!</h2>
 	<p>Use this stats overlay to display your warzone stats while streaming</p>
 
-	<?php echo validation_errors(); ?>
 	<div class="mainContainer">
 		<div class="form">
 			<?php echo form_open("generate"); ?>
 			<div class="input">
 				<p>Input your username here</p>
 				<p><input class="form-control mr-sm-2" type="text" placeholder="Username" name="username"
-						value=<?php echo $username ?>></p>
+						value=<?php echo urldecode($username) ?>></p>
 
 				<p> Select your platform</p>
 				<p>
@@ -94,5 +93,11 @@
 		</div>
 		<?php
 				} ?>
+
+	<!-- <p>Generate link isn't work at the moment. A fix is being worked on. In the meantime fill in your data to the template links below to get your overlay.</p>
+	<p>Platforms are as follows: Playstation = psn, Xbox = xbl, Steam = steam, Activision = uno, Battlenet = battle.</p>
+	<p>Daily Stats: https://warzonestats.net/dailyoverlay/username/platform</p>
+	<p>Total & Daily: https://warzonestats.net/overlay/username/platform</p>
+	<p>Example: https://warzonestats.net/overlay/tasty_lempons/psn</p> -->
 	</div>
 </div>

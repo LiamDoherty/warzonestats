@@ -40,6 +40,9 @@
 				<li <?php if($page == "home") {echo "class=\"home active\"";} else {echo "nav-item";} ?>>
 					<a class="nav-link" href="home">Home <span class="sr-only">(current)</span></a>
 				</li>
+				<li <?php if($page == "tutorial") {echo "class=\"tutorial active\"";} else {echo "nav-item";} ?>>
+					<a class="nav-link" href="tutorial">Tutorial</a>
+				</li>
 				<li <?php if($page == "about") {echo "class=\"home active\"";} else {echo "nav-item";} ?>>
 					<a class="nav-link" href="about">About</a>
 				</li>

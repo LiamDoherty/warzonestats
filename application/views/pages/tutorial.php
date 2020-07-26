@@ -1,7 +1,7 @@
 <div class="landing-wrapper bg-primary">
 	<h2>Tutorial</h2>
 	<div class="mainContainer">
-		<div>
+    <div style="width: 100%">
         <div class="vids">
             <iframe src="https://www.youtube.com/embed/IjS8o2h8qLU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>

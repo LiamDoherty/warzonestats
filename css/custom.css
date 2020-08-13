@@ -122,9 +122,35 @@ h1, h2, h3, h4, h5, h6 {
     margin-top: 50;
 }
 
-.preview-bg
+img
 {
+    width: 100%;
+}
 
+.std-image-wrapper
+{
+    width: 100%;
+    text-align: center;
+}
+
+.vids
+{
+    position: relative;
+    padding-bottom: 56.25%;
+}
+
+iframe{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    }
+
+.std-image
+{
+    width: 60%;
+    display: inline-block;
 }
 
 .form

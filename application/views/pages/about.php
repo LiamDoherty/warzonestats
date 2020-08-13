@@ -2,7 +2,7 @@
 	<h2>About</h2>
 	<div class="mainContainer">
 		<div>
-			<p>Warzone stats overlay was created for streamers call of duty warzone playerswho would like to be able to
+			<p>Warzone stats overlay was created for streamers call of duty warzone players who would like to be able to
 				show their realtime stats during their stream.</p>
 			<p>This overlay is suitable for Twitch, Mixer, Youtube and Facebook. Additionally it will work with
 				streamlabs, obs or any streaming software that supports browser sources</p>

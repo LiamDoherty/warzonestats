@@ -41,9 +41,19 @@
 						</select>
 					</fieldset>
 				</p>
+				<p>Background Color</p>
+				<p>
+					<fieldset>
+						<select class="custom-select" name="bgType">
+							<option <?php if($bgType=="transparent"): ?>selected="selected" <?php endif;?> value="transparent">
+								Transparent</option>
+							<option <?php if($bgType=="green"): ?> selected="selected" <?php endif; ?>
+								value="green">Green</option>
+						</select>
+					</fieldset>
+				</p>
 				<button id="submit-buttons" class="btn btn-success" type="submit" ​​​​​>Generate Link</button>
 				<br />
-
 			</div>
 			<div>
 				</form>
@@ -75,13 +85,26 @@
 						$url = 'dailyoverlay/';
 					}
 				}
+
+				$url = $url.$username.'/'.$platform.'/';
+
+				if(isset($bgType))
+				{
+					if($bgType == "transparent"){
+						$url = $url.$bgType.'/';
+					}
+					else if($bgType == "green"){
+						$url = $url.$bgType.'/';
+					}
+				}
+
 				if(isset($confirmed) && $confirmed)
 				{
 					?>
 		<div class="sessionStats">
 			<label for="link">Session Stats:</label>
 			<input type="text" class="form-control" id="fname" name="fname"
-				value=<?php echo base_url().$url.$username.'/'.$platform?>>
+				value=<?php echo base_url().$url?>>
 		</div>
 		<?php
 				}

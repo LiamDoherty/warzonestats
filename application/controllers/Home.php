@@ -30,6 +30,7 @@ class Home extends CI_Controller
         $username = $this->input->post('username');
         $platform = $this->input->post('platform');
         $overlayType = $this->input->post('overlayType');
+        $bgType = $this->input->post('bgType');
         $this->SetToken($this->baseCookie);
         $this->Login("info@hexeum.net", "Hexeum0verlay", false);
         $username =  urlencode($username);
@@ -38,29 +39,14 @@ class Home extends CI_Controller
         if(!$isUser)
         {
             $data = array('confirmed' => false, 'username' => $username, 'platform' => $platform,
-            "overlayType" => $overlayType);
+            "overlayType" => $overlayType, "bgType" => $bgType);
             $this->view("home", $data);
         }
         else{
             $data = array('confirmed' => true, 'username' => $username, 'platform' => $platform,
-            "overlayType" => $overlayType);
+            "overlayType" => $overlayType, "bgType" => $bgType);
             $this->view('home', $data);
         }
-    }
-
-    public function getDailyStats($username, $platform)
-    {
-        $newData  =$this->GetStatsArray($username, $platform);
-        $mergedData = array(
-            'username' => $username,
-            'platform' => $platform,
-            'wins' => $newData['wins'],
-            'kills' => $newData['kills'],
-            'mostRecentMatchId' => $newData['mostRecentMatchId']
-        );
-
-        $this->load->view('templates/overlay-template');
-        $this->load->view('pages/dailyOverlay', $mergedData);
     }
 
     public function ConfirmUser($username, $platform)
@@ -94,19 +80,20 @@ class Home extends CI_Controller
         }
     }
 
-    public function UpdateOverlay()
+    public function getDailyStats($username, $platform, $bgType = 'transparent')
     {
-        $username = $this->input->post('username');
-        $platform = $this->input->post('platform');
-        $newData  = $this->GetStatsArray($username, $platform);
+        $newData  =$this->GetStatsArray($username, $platform);
         $mergedData = array(
+            'username' => $username,
+            'platform' => $platform,
             'wins' => $newData['wins'],
             'kills' => $newData['kills'],
-            'totalKills' => $newData['totalKills'],
-            'totalWins' => $newData['totalWins'],
+            'bgType' => $bgType,
             'mostRecentMatchId' => $newData['mostRecentMatchId']
         );
-        echo json_encode($mergedData);
+
+        $this->load->view('templates/overlay-template');
+        $this->load->view('pages/dailyOverlay', $mergedData);
     }
 
     public function UpdateDailyOverlay()
@@ -122,7 +109,22 @@ class Home extends CI_Controller
         echo json_encode($mergedData);
     }
 
-    public function getOverlayStats($username, $platform)
+    public function UpdateOverlay()
+    {
+        $username = $this->input->post('username');
+        $platform = $this->input->post('platform');
+        $newData  = $this->GetStatsArray($username, $platform);
+        $mergedData = array(
+            'wins' => $newData['wins'],
+            'kills' => $newData['kills'],
+            'totalKills' => $newData['totalKills'],
+            'totalWins' => $newData['totalWins'],
+            'mostRecentMatchId' => $newData['mostRecentMatchId']
+        );
+        echo json_encode($mergedData);
+    }
+
+    public function getOverlayStats($username, $platform, $bgType = 'transparent')
     {
         $newData  =$this->GetStatsArray($username, $platform);
         $mergedData = array(
@@ -132,6 +134,7 @@ class Home extends CI_Controller
             'kills' => $newData['kills'],
             'totalKills' => $newData['totalKills'],
             'totalWins' => $newData['totalWins'],
+            'bgType' => $bgType,
             'mostRecentMatchId' => $newData['mostRecentMatchId']
         );
 
@@ -433,7 +436,7 @@ class Home extends CI_Controller
         if($data == null)
         {
             $data = array('username' => '', 'platform' => '',
-            "overlayType" => '', 'title' => $title, 'page' => $page);
+            "overlayType" => '', 'title' => $title, "bgType" => '', 'page' => $page);
         }
         else
         {

@@ -1,5 +1,14 @@
 <script src="<?php echo base_url(); ?>js/dailyOverlay-refresh.js"></script>
 
+<?php 
+	if(isset($bgType))
+	{
+		if($bgType == "green"){
+			echo '<body style="background-color:#00b140">';
+		}
+	}
+?>
+ 
 <div class="container">
 	<div class="statsContainer">
 		<video loop autoplay muted class="video">
